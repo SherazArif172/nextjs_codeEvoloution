@@ -6,19 +6,18 @@ export async function GET(req, res) {
   return NextResponse.json(people);
 }
 export async function POST(req, res) {
-  const comment = await req.json();
+  const body = await req.json();
   const newcomment = {
     id: people.length + 1,
-    text: comment.text,
+    name: body.name,
+    skill: body.skill,
+    age: body.age,
   };
   people.push(newcomment);
-  return (
-    NextResponse.json(JSON.stringify(newcomment)),
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      status: 201,
-    }
-  );
+  return NextResponse.json(people, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    status: 201,
+  });
 }
