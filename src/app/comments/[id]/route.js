@@ -1,20 +1,40 @@
-import { getComments } from "../comment";
+import { NextResponse } from "next/server";
+import { people } from "../comment";
 
-export async function GET(req, res, params) {
-  const id = params;
+export async function GET(req, { params }) {
+  const { id } = params;
+
+  const comment = people.find((comment) => comment.id === parseInt(id));
+
+  // console.log(comment);
+
+  return NextResponse.json(comment);
+}
+export async function PATCH(req, { params }) {
+  const { id } = params;
+  console.log(id);
+  const body = await req.json();
+  const { name, age, skill } = body;
+
+  const comment = people.findIndex((comment) => comment.id === parseInt(id));
+  const targetPeople = people[comment];
+
+  console.log(targetPeople);
+  targetPeople.name = name;
+  targetPeople.age = age;
+  targetPeople.skill = skill;
+  console.log(targetPeople);
+
+  return NextResponse.json(targetPeople);
+}
+export async function DELETE(req, { params }) {
+  const { id } = params;
   console.log(id);
 
-  const comments = await getComments();
+  const comment = people.findIndex((comment) => comment.id === parseInt(id));
+  console.log(comment);
+  const deletedComment = people[comment];
+  people.splice(comment, 1);
 
-  if (!comments) {
-    throw new Error("Failed to retrieve comments");
-  }
-
-  const comment = comments.find((comment) => comment.id === parseInt(id));
-
-  if (!comment) {
-    return Response.status(404).json({ error: "Comment not found" });
-  }
-
-  return Response.json(comment);
+  return NextResponse.json(deletedComment);
 }
