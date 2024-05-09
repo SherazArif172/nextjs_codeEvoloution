@@ -1,9 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { people } from "./comment";
-import { headers } from "next/headers";
 
 export async function GET(req, res) {
-  return NextResponse.json(people);
+  const searchParams = req.nextUrl.searchParams;
+  const name = searchParams.get("name");
+  const age = searchParams.get("age");
+  console.log(name);
+  const filteredComments = name
+    ? people
+        .filter((comment) => comment.name === name)
+        .filter((user) => user.age === parseInt(age))
+    : people;
+  // console.log(filteredComments);
+  // console.log(req.nextUrl.searchParams);
+  return NextResponse.json(filteredComments);
 }
 export async function POST(req, res) {
   const body = await req.json();
